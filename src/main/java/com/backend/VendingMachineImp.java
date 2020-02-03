@@ -1,7 +1,6 @@
 package main.java.com.backend;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.text.NumberFormat;
 import java.util.Observable;
 
