@@ -1,7 +1,6 @@
 package com.backend;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Observable;
@@ -50,7 +49,7 @@ public class VendingMachine extends Observable {
                 if (inventory.availability == 0) {
                     msg = "The item does not have sufficient inventory!";
                 } else if (fund.compareTo(inventory.item.price) < 0) {
-                    msg = "You do not have sufficient fund!";
+                    msg = "You do not have sufficient funds!";
                 } else {
                     //Successfully delivered the item
                     inventory.availability--;
@@ -61,7 +60,7 @@ public class VendingMachine extends Observable {
                     notifyObservers();
                 }
                 if (fund.compareTo(BigDecimal.ZERO) > 0) {
-                    msg += "\nReturning " + GetFund();
+                    msg += "\nReturned " + GetFund();
                 }
                 resetFund();
                 return msg;
@@ -82,9 +81,9 @@ public class VendingMachine extends Observable {
     }
 
     public String resetFund() {
-        String msg = "There is no fund!";
+        String msg = "There are no funds to return!";
         if (this.fund.compareTo(BigDecimal.ZERO) > 0) {
-            msg = "Returning " + GetFund();
+            msg = "Returned " + GetFund();
         }
         this.SetFund(BigDecimal.ZERO);
         return msg;

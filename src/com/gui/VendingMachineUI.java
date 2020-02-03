@@ -4,6 +4,7 @@ import com.backend.CoinEnum;
 import com.backend.Inventory;
 import com.backend.VendingMachine;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +20,7 @@ public class VendingMachineUI extends JFrame implements Observer {
     private JButton dimesButton;
     private JButton nickleButton;
     private JTextField fundTextField;
-    private JButton returnFundButton;
+    private JButton coinReturnButton;
     private JPanel itemsPanel;
     private JPanel cokePanel;
     private JPanel chipsPanel;
@@ -38,11 +39,40 @@ public class VendingMachineUI extends JFrame implements Observer {
         super(title);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
+        this.setPreferredSize(new Dimension(800, 400));
         this.setContentPane(mainPanel);
+        setResizable(false);
         this.pack();
+        this.setLocationRelativeTo(null);
 
         this.myVendingMachine = vendingMachine;
+        try {
+            Image qImg = ImageIO.read(getClass().getResource("../../images/quarter.jpg"));
+            Image qNewImg = qImg.getScaledInstance( 50, 50,  java.awt.Image.SCALE_SMOOTH ) ;
+            quarterButton.setIcon(new ImageIcon(qNewImg));
+
+            Image dImg = ImageIO.read(getClass().getResource("../../images/dime.jpg"));
+            Image dNewImg = dImg.getScaledInstance( 50, 50,  java.awt.Image.SCALE_SMOOTH ) ;
+            dimesButton.setIcon(new ImageIcon(dNewImg));
+
+            Image nImg = ImageIO.read(getClass().getResource("../../images/nickel.jpg"));
+            Image nNewImg = nImg.getScaledInstance( 50, 50,  java.awt.Image.SCALE_SMOOTH ) ;
+            nickleButton.setIcon(new ImageIcon(nNewImg));
+
+            Image cImg = ImageIO.read(getClass().getResource("../../images/coke.jpg"));
+            Image cNewImg = cImg.getScaledInstance( 100, 100,  java.awt.Image.SCALE_SMOOTH ) ;
+            cokeButton.setIcon(new ImageIcon(cNewImg));
+
+            Image chImg = ImageIO.read(getClass().getResource("../../images/chips.jpg"));
+            Image chNewImg = chImg.getScaledInstance( 100, 100,  java.awt.Image.SCALE_SMOOTH ) ;
+            chipsButton.setIcon(new ImageIcon(chNewImg));
+
+            Image rImg = ImageIO.read(getClass().getResource("../../images/redbull.jpg"));
+            Image rNewImg = rImg.getScaledInstance( 100, 100,  java.awt.Image.SCALE_SMOOTH ) ;
+            redbullButton.setIcon(new ImageIcon(rNewImg));
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
 
         quarterButton.addActionListener(new ActionListener() {
             @Override
@@ -65,7 +95,7 @@ public class VendingMachineUI extends JFrame implements Observer {
             }
         });
 
-        returnFundButton.addActionListener(new ActionListener() {
+        coinReturnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String message = myVendingMachine.resetFund();
@@ -137,9 +167,9 @@ public class VendingMachineUI extends JFrame implements Observer {
     }
 
     public static void main(String[] args) {
-        VendingMachine observable = new VendingMachine();
-        JFrame frame = new VendingMachineUI("Bahar's Vending Machine.", observable);
-        observable.addObserver((Observer) frame);
+        VendingMachine vendingMachine = new VendingMachine();
+        JFrame frame = new VendingMachineUI("Bahar's Vending Machine.", vendingMachine);
+        vendingMachine.addObserver((Observer) frame);
         frame.setVisible(true);
     }
 }
