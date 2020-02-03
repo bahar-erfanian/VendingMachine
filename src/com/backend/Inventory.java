@@ -1,3 +1,5 @@
+package com.backend;
+
 public class Inventory {
     public Item item;
     public int availability;
