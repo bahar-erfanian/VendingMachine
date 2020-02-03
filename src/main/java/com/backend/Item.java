@@ -1,20 +1,19 @@
 package main.java.com.backend;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class Item {
     public String name;
-    public BigDecimal price;
+    public int priceCent;
 
 
-    public Item(String name, BigDecimal price) {
+    public Item(String name, int priceCent) {
         this.name = name;
-        this.price = price;
+        this.priceCent = priceCent;
     }
 
-    public String GetPriceString(){
+    public String GetPriceString() {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        return formatter.format(this.price);
+        return formatter.format(this.priceCent / 100.0);
     }
 }

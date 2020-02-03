@@ -161,7 +161,7 @@ public class VendingMachineUI extends JFrame implements Observer {
         Inventory chips = myVendingMachine.getItem("Chips");
         Inventory redbull = myVendingMachine.getItem("RedBull");
 
-        this.fundTextField.setText(myVendingMachine.getFund());
+        this.fundTextField.setText(myVendingMachine.getFundCent());
 
         cokePriceTextField.setText(coke.item.GetPriceString());
         cokeAvailabilityTextField.setText(Integer.toString(coke.availability));
@@ -176,7 +176,7 @@ public class VendingMachineUI extends JFrame implements Observer {
         Inventory chips = myVendingMachine.getItem("Chips");
         Inventory redbull = myVendingMachine.getItem("RedBull");
 
-        this.fundTextField.setText(myVendingMachine.getFund());
+        this.fundTextField.setText(myVendingMachine.getFundCent());
 
         cokeAvailabilityTextField.setText(Integer.toString(coke.availability));
         chipsAvailabilityTextField.setText(Integer.toString(chips.availability));

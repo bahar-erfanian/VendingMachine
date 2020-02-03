@@ -3,7 +3,7 @@ package main.java.com.backend;
 import org.jetbrains.annotations.NotNull;
 
 public interface VendingMachine {
-    String getFund();
+    String getFundCent();
 
     void addFund(@NotNull CoinEnum coin);
 

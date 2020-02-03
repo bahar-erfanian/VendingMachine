@@ -2,38 +2,37 @@ package main.java.com.backend;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Observable;
 
 
 public class VendingMachineImp extends Observable implements VendingMachine {
     private Inventory[] inventories;
-    private BigDecimal fund = BigDecimal.ZERO;
+    private int fundCent = 0;
 
     public VendingMachineImp() {
         initiateInventory();
     }
 
-    public String getFund() {
+    public String getFundCent() {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        return formatter.format(this.fund);
+        return formatter.format(this.fundCent / 100.0);
     }
 
     public void addFund(@NotNull CoinEnum coin) {
-        BigDecimal price = new BigDecimal("0");
+        int priceCent = 0;
         switch (coin) {
             case Nickel:
-                price = new BigDecimal("0.05");
+                priceCent = 5;
                 break;
             case Dime:
-                price = new BigDecimal("0.10");
+                priceCent = 10;
                 break;
             case Quarter:
-                price = new BigDecimal("0.25");
+                priceCent = 25;
                 break;
         }
-        SetFund(fund.add(price));
+        SetFund(fundCent + priceCent);
     }
 
     public String chooseItem(String itemName) {
@@ -44,23 +43,23 @@ public class VendingMachineImp extends Observable implements VendingMachine {
                 if (inventory.availability == 0) {
                     msg = "The item does not have sufficient inventory!";
                     isSuccess = false;
-                } else if (fund.compareTo(inventory.item.price) < 0) {
+                } else if (fundCent < inventory.item.priceCent) {
                     msg = "You do not have sufficient funds!";
                     isSuccess = false;
                 } else {
                     //Successfully delivered the item
                     inventory.availability--;
-                    SetFund(fund.subtract(inventory.item.price));
+                    SetFund(fundCent - inventory.item.priceCent);
                     msg = "Enjoy your " + itemName + "!";
                     isSuccess = true;
 
                     setChanged();
                     notifyObservers();
                 }
-                if (fund.compareTo(BigDecimal.ZERO) > 0) {
-                    msg += "\nReturned " + getFund();
+                if (fundCent > 0) {
+                    msg += "\nReturned " + getFundCent();
+                    resetFund();
                 }
-                resetFund();
                 if (!isSuccess) {
                     throw new IllegalArgumentException(msg);
                 }
@@ -81,26 +80,26 @@ public class VendingMachineImp extends Observable implements VendingMachine {
     }
 
     public String resetFund() {
-        if (this.fund.compareTo(BigDecimal.ZERO) == 0) {
-            this.SetFund(BigDecimal.ZERO);
+        if (this.fundCent == 0) {
+            this.SetFund(0);
             throw new IllegalArgumentException("There are no funds to return!");
         }
-        String msg = "Returned " + getFund();
-        this.SetFund(BigDecimal.ZERO);
+        String msg = "Returned " + getFundCent();
+        this.SetFund(0);
         return msg;
     }
 
     private void initiateInventory() {
         inventories = new Inventory[]
                 {
-                        new Inventory(new Item("Coke", new BigDecimal("0.55")), 10),
-                        new Inventory(new Item("Chips", new BigDecimal("0.70")), 10),
-                        new Inventory(new Item("RedBull", new BigDecimal("0.75")), 10)
+                        new Inventory(new Item("Coke", 55), 10),
+                        new Inventory(new Item("Chips", 70), 10),
+                        new Inventory(new Item("RedBull", 75), 10)
                 };
     }
 
-    private void SetFund(BigDecimal fund) {
-        this.fund = fund;
+    private void SetFund(int fundCent) {
+        this.fundCent = fundCent;
         setChanged();
         notifyObservers();
     }
