@@ -42,19 +42,23 @@ public class VendingMachine extends Observable {
         SetFund(fund.add(price));
     }
 
-    public String ChooseItem(String itemName) {
+    public MessagePacket ChooseItem(String itemName) {
         String msg;
+        boolean isSuccess = true;
         for (Inventory inventory : inventories) {
             if (inventory.item.name.equals(itemName)) {
                 if (inventory.availability == 0) {
                     msg = "The item does not have sufficient inventory!";
+                    isSuccess = false;
                 } else if (fund.compareTo(inventory.item.price) < 0) {
                     msg = "You do not have sufficient funds!";
+                    isSuccess = false;
                 } else {
                     //Successfully delivered the item
                     inventory.availability--;
                     SetFund(fund.subtract(inventory.item.price));
                     msg = "Enjoy your " + itemName + "!";
+                    isSuccess = true;
 
                     setChanged();
                     notifyObservers();
@@ -63,11 +67,11 @@ public class VendingMachine extends Observable {
                     msg += "\nReturned " + GetFund();
                 }
                 resetFund();
-                return msg;
+                return new MessagePacket(isSuccess,msg);
             }
         }
         resetFund();
-        return "The item: " + itemName + " does not exist";
+        return new MessagePacket(false ,"The item: " + itemName + " does not exist");
 
     }
 
@@ -80,13 +84,15 @@ public class VendingMachine extends Observable {
         return null;
     }
 
-    public String resetFund() {
+    public MessagePacket resetFund() {
         String msg = "There are no funds to return!";
+        boolean isSuccess = false;
         if (this.fund.compareTo(BigDecimal.ZERO) > 0) {
             msg = "Returned " + GetFund();
+            isSuccess = true;
         }
         this.SetFund(BigDecimal.ZERO);
-        return msg;
+        return new MessagePacket(isSuccess, msg);
     }
 
     private void initiateInventory() {
