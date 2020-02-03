@@ -18,4 +18,3 @@ public class Item {
         return formatter.format(this.price);
     }
 }
-

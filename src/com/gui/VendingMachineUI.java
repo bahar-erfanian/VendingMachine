@@ -1,9 +1,6 @@
 package com.gui;
 
-import com.backend.CoinEnum;
-import com.backend.Inventory;
-import com.backend.MessagePacket;
-import com.backend.VendingMachine;
+import com.backend.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -30,11 +27,11 @@ public class VendingMachineUI extends JFrame implements Observer {
     private JTextField cokeAvailabilityTextField;
     private JButton chipsButton;
     private JTextField chipsAvailabilityTextField;
-    private JButton redbullButton;
-    private JTextField redbullAvailabilityTextField;
+    private JButton redBullButton;
+    private JTextField redBullAvailabilityTextField;
     private JTextField cokePriceTextField;
     private JTextField chipsPriceTextField;
-    private JTextField redbullPriceTextField;
+    private JTextField redBullPriceTextField;
 
     public VendingMachineUI(String title, VendingMachine vendingMachine) {
         super(title);
@@ -48,29 +45,29 @@ public class VendingMachineUI extends JFrame implements Observer {
 
         this.myVendingMachine = vendingMachine;
         try {
-            Image qImg = ImageIO.read(getClass().getResource("../../images/quarter.jpg"));
+            Image qImg = ImageIO.read(getClass().getResource("../../resources/images/quarter.jpg"));
             Image qNewImg = qImg.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
             quarterButton.setIcon(new ImageIcon(qNewImg));
 
-            Image dImg = ImageIO.read(getClass().getResource("../../images/dime.jpg"));
+            Image dImg = ImageIO.read(getClass().getResource("../../resources/images/dime.jpg"));
             Image dNewImg = dImg.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
             dimesButton.setIcon(new ImageIcon(dNewImg));
 
-            Image nImg = ImageIO.read(getClass().getResource("../../images/nickel.jpg"));
+            Image nImg = ImageIO.read(getClass().getResource("../../resources/images/nickel.jpg"));
             Image nNewImg = nImg.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
             nickleButton.setIcon(new ImageIcon(nNewImg));
 
-            Image cImg = ImageIO.read(getClass().getResource("../../images/coke.jpg"));
+            Image cImg = ImageIO.read(getClass().getResource("../../resources/images/coke.jpg"));
             Image cNewImg = cImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
             cokeButton.setIcon(new ImageIcon(cNewImg));
 
-            Image chImg = ImageIO.read(getClass().getResource("../../images/chips.jpg"));
+            Image chImg = ImageIO.read(getClass().getResource("../../resources/images/chips.jpg"));
             Image chNewImg = chImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
             chipsButton.setIcon(new ImageIcon(chNewImg));
 
-            Image rImg = ImageIO.read(getClass().getResource("../../images/redbull.jpg"));
+            Image rImg = ImageIO.read(getClass().getResource("../../resources/images/redbull.jpg"));
             Image rNewImg = rImg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
-            redbullButton.setIcon(new ImageIcon(rNewImg));
+            redBullButton.setIcon(new ImageIcon(rNewImg));
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -99,80 +96,100 @@ public class VendingMachineUI extends JFrame implements Observer {
         coinReturnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MessagePacket message = myVendingMachine.resetFund();
-                ShowMessage(message);
+                try {
+                    String msg = myVendingMachine.resetFund();
+                    showMessage(msg, true);
+                }
+                catch (Exception ex) {
+                    showMessage(ex.getMessage(), false);
+                }
             }
         });
 
         cokeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MessagePacket message = myVendingMachine.ChooseItem("Coke");
-                ShowMessage(message);
+                try {
+                    String msg = myVendingMachine.chooseItem("Coke");
+                    showMessage(msg, true);
+                }
+                catch (Exception ex) {
+                    showMessage(ex.getMessage(), false);
+                }
             }
         });
 
         chipsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MessagePacket message = myVendingMachine.ChooseItem("Chips");
-                ShowMessage(message);
+                try {
+                    String msg = myVendingMachine.chooseItem("Chips");
+                    showMessage(msg, true);
+                }
+                catch (Exception ex) {
+                    showMessage(ex.getMessage(), false);
+                }
             }
         });
 
-        redbullButton.addActionListener(new ActionListener() {
+        redBullButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MessagePacket messagePacket = myVendingMachine.ChooseItem("RedBull");
-                ShowMessage(messagePacket);
+                try {
+                    String msg = myVendingMachine.chooseItem("RedBull");
+                    showMessage(msg, true);
+                }
+                catch (Exception ex) {
+                    showMessage(ex.getMessage(), false);
+                }
             }
         });
 
-        InitiateVendingMachineInformation();
+        initiateVendingMachineInformation();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        SetChangeableVendingMachineVariable();
+        setChangeableVendingMachineVariable();
     }
 
-    private void InitiateVendingMachineInformation() {
-        Inventory coke = myVendingMachine.GetItem("Coke");
-        Inventory chips = myVendingMachine.GetItem("Chips");
-        Inventory redbull = myVendingMachine.GetItem("RedBull");
+    private void initiateVendingMachineInformation() {
+        Inventory coke = myVendingMachine.getItem("Coke");
+        Inventory chips = myVendingMachine.getItem("Chips");
+        Inventory redbull = myVendingMachine.getItem("RedBull");
 
-        this.fundTextField.setText(myVendingMachine.GetFund());
+        this.fundTextField.setText(myVendingMachine.getFund());
 
         cokePriceTextField.setText(coke.item.GetPriceString());
         cokeAvailabilityTextField.setText(Integer.toString(coke.availability));
         chipsPriceTextField.setText(chips.item.GetPriceString());
         chipsAvailabilityTextField.setText(Integer.toString(chips.availability));
-        redbullPriceTextField.setText(redbull.item.GetPriceString());
-        redbullAvailabilityTextField.setText(Integer.toString(redbull.availability));
+        redBullPriceTextField.setText(redbull.item.GetPriceString());
+        redBullAvailabilityTextField.setText(Integer.toString(redbull.availability));
     }
 
-    private void SetChangeableVendingMachineVariable() {
-        Inventory coke = myVendingMachine.GetItem("Coke");
-        Inventory chips = myVendingMachine.GetItem("Chips");
-        Inventory redbull = myVendingMachine.GetItem("RedBull");
+    private void setChangeableVendingMachineVariable() {
+        Inventory coke = myVendingMachine.getItem("Coke");
+        Inventory chips = myVendingMachine.getItem("Chips");
+        Inventory redbull = myVendingMachine.getItem("RedBull");
 
-        this.fundTextField.setText(myVendingMachine.GetFund());
+        this.fundTextField.setText(myVendingMachine.getFund());
 
         cokeAvailabilityTextField.setText(Integer.toString(coke.availability));
         chipsAvailabilityTextField.setText(Integer.toString(chips.availability));
-        redbullAvailabilityTextField.setText(Integer.toString(redbull.availability));
+        redBullAvailabilityTextField.setText(Integer.toString(redbull.availability));
     }
 
-    private void ShowMessage(MessagePacket messagePacket) {
+    private void showMessage(String message, boolean isSuccess) {
         int msgType = JOptionPane.INFORMATION_MESSAGE;
-        if (!messagePacket.isSuccess) {
+        if (!isSuccess) {
             msgType = JOptionPane.ERROR_MESSAGE;
         }
-        JOptionPane.showMessageDialog(this, messagePacket.message, "Dialog", msgType);
+        JOptionPane.showMessageDialog(this, message, "Dialog", msgType);
     }
 
     public static void main(String[] args) {
-        VendingMachine vendingMachine = new VendingMachine();
+        VendingMachineImp vendingMachine = new VendingMachineImp();
         JFrame frame = new VendingMachineUI("Bahar's Vending Machine.", vendingMachine);
         vendingMachine.addObserver((Observer) frame);
         frame.setVisible(true);
